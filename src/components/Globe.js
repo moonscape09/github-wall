@@ -25,9 +25,10 @@ const GitHubGlobe = () => {
     const myGlobe = Globe()(globeRef.current)
       .globeImageUrl(null)         // no texture image
       .bumpImageUrl('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-topology.png')          // no bump map
-      .backgroundColor('#000010')
       .backgroundImageUrl('https://cdn.jsdelivr.net/npm/three-globe/example/img/night-sky.png')
-      .showAtmosphere(false)
+      .showAtmosphere(true)
+      .atmosphereColor('rgba(122, 122, 122, 0.02)') // perhaps a second transparent globe?
+      .atmosphereAltitude(0.5)
       .polygonsData(polygonsData)
       .polygonAltitude(0.01)
       .polygonCapColor(() => '#1a1d3d')
@@ -41,7 +42,6 @@ const GitHubGlobe = () => {
 
       
 
-    // Override globe material: e.g. solid dark teal
     const scene = myGlobe.scene();
   
     const sphereMaterial = new THREE.MeshPhongMaterial({
@@ -54,10 +54,13 @@ const GitHubGlobe = () => {
     // Optionally add a subtle light so color is visible
     const ambientLight = new THREE.AmbientLight(0x444444, 0.5);
     scene.add(ambientLight);
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
-    dirLight.position.set(0, 1, 0);
-    scene.add(dirLight);
 
+    // Directional from right side:
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+    // Position the light to the right of the globe:
+    // e.g., x positive, y maybe slightly above, z maybe behind or in front depending on desired angle.
+    dirLight.position.set(5, 0, 0); // far to the +X side
+    scene.add(dirLight);
     // Controls
     myGlobe.controls().autoRotate = true;
     myGlobe.controls().autoRotateSpeed = -0.5;
